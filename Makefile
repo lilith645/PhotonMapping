@@ -1,4 +1,4 @@
-OBJS = main.cpp
+OBJS = main.cpp ./PhotonRender/PhotonMap.cpp ./PhotonRender/Maths.cpp
 
 OS := $(shell uname)
 CC = clang++

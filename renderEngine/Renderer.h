@@ -9,7 +9,6 @@
 #include "../models/ColouredModel.h"
 #include "../Entities/Pixel.h"
 #include "../shaders/StaticShader.h"
-#include "../toolbox/Maths.h"
 
 #define FOV 70.0f
 #define NEAR_PLANE 0.1f
@@ -28,16 +27,16 @@ class Renderer {
       glClear(GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT);
     }
     
-    void render(std::vector<Pixel> pixels, StaticShader shader) {
+    void render(std::vector<Pixel*> pixels, StaticShader shader) {
       for(int i = 0; i < pixels.size(); ++i) {
-        RawModel rawModel = pixels[i].getRawModel();
+        RawModel rawModel = pixels[i]->getRawModel();
 
         glBindVertexArray(rawModel.getVaoID());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         
-        shader.loadColour(pixels[i].getColour());
-        shader.loadTransformation(pixels[i].getPosition(), pixels[i].getScale());
+        shader.loadColour(pixels[i]->getColour());
+        shader.loadTransformation(pixels[i]->getPosition(), pixels[i]->getScale());
         glDrawElements(GL_TRIANGLES, rawModel.getVertexCount(), GL_UNSIGNED_INT, 0);
         
         glDisableVertexAttribArray(0);

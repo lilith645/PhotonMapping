@@ -17,23 +17,21 @@
 #include "./models/RawModel.h"
 #include "./models/ColouredModel.h"
 #include "./shaders/StaticShader.h"
+#include "./PhotonRender/PhotonMap.h"
+#include "./PhotonRender/Maths.h"
 
+
+PhotonMap photons;
 float mouseX;
 float mouseY;
 bool mousePressed[3];
 
-bool w, a, d;
-
 void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
-
-  mouseX = xpos;
-  mouseY = ypos;
+  photons.mouse(xpos, ypos);
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-  
-  if (action == GLFW_PRESS && button >= 0 && button < 3)
-    mousePressed[button] = true;
+  photons.mousePressed(button, action, mods);
 }
 
 void key_callback(GLFWwindow* window,
@@ -41,10 +39,12 @@ void key_callback(GLFWwindow* window,
                   int scancode,
                   int action,
                   int mode) {
-  
+  photons.keyPressed(key, scancode, action, mode);
 }
 
-std::vector<Pixel> generatePixels(Loader* loader, int resolution) {
+std::vector<Pixel*> generatePixels(Loader* loader, int resolution) {
+  Maths math;
+  
   std::vector<float> vertices = {
      0.0f, 1.0f,0,   //V0
      0.0f, 0.0f,0,  //V1
@@ -61,12 +61,12 @@ std::vector<Pixel> generatePixels(Loader* loader, int resolution) {
   
   float halfRes = resolution/2.0f;
   
-  std::vector<Pixel> pixels;
+  std::vector<Pixel*> pixels;
   for(int i = -halfRes; i < halfRes; ++i) {
     for(int j = -halfRes; j < halfRes; ++j) {
       ColouredModel model;
-      model.init(rawModel, Maths::generateRandomColour()); 
-      pixels.push_back(Pixel(model, glm::vec3(i/halfRes, j/halfRes,0), 1.0f/halfRes));
+      model.init(rawModel, math.generateRandomColour()); 
+      pixels.push_back(new Pixel(model, glm::vec3(i/halfRes, j/halfRes,0), 1.0f/halfRes));
     }
   }
   
@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
   StaticShader shader;
   Renderer renderer(display.getWidth(), display.getHeight());
   
-  std::vector<Pixel> pixels = generatePixels(&loader, 1024);
+  std::vector<Pixel*> pixels = generatePixels(&loader, 1024);
   
   GLfloat lastTime = 0.0f;
   
@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
       
     glfwPollEvents();
     
-    
+    photons.draw(pixels);
     
     renderer.prepare();
     shader.start();

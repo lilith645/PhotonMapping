@@ -1,6 +1,8 @@
 #ifndef RAWMODEL_H
 #define RAWMODEL_H
 
+#include <GLFW/glfw3.h>
+
 class RawModel {
   public:
     RawModel() {

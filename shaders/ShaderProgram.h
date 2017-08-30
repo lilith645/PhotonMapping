@@ -85,6 +85,16 @@ class ShaderProgram {
       glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
     }
     
+    glm::mat4 createTransformationMatrix(glm::vec3 translation, float scale) {
+      glm::mat4 model = glm::mat4(1);
+      
+      model = glm::translate(model, translation);
+      
+      model = glm::scale(model, glm::vec3(scale));
+      
+      return model;
+   }
+    
     int loadShader(std::string file_path, int type) {
       // Read the Vertex Shader code from the file
       std::string shaderCode;

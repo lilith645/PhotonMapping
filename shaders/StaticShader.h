@@ -7,7 +7,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "./ShaderProgram.h"
-#include "../toolbox/Maths.h"
 
 class StaticShader: public ShaderProgram {
   public:
@@ -16,7 +15,7 @@ class StaticShader: public ShaderProgram {
     }
     
     void loadTransformation(glm::vec3 position, float scale) {
-      loadMatrix(location_transformation, Maths::createTransformationMatrix(position, scale));
+      loadMatrix(location_transformation, createTransformationMatrix(position, scale));
     }
     
     void loadColour(glm::vec3 colour) {
